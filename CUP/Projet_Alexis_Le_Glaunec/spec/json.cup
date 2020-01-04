@@ -1,0 +1,46 @@
+init with   {: System.out.println("Analyseur syntaxique JSON"); :}
+action code {: /* helpers pour indentation */
+ int indent=0;
+ void OUT(String s) { System.out.print(s); }
+ void NL() { /* newline et indentation */
+      OUT("\n"); for(int i=0 ; i<3*indent; i++)  OUT(" ");
+ }
+:};
+
+terminal String NUMBER, FALSE, TRUE, NULL, STRING;
+terminal DECIMALPOINT, CROCHET_O, CROCHET_F, ACC_O, ACC_F, COLON, COMMA, UNK;
+nonterminal value, object, array, member, list_values, list_members, beginobject, endobject, beginarray, endarray, nameseparator, valueseparator;
+
+
+value	::= STRING:str 	{: System.out.print(str); :}
+	 | FALSE 	{: System.out.print("false"); :}
+	 | NULL 	{: System.out.print("null"); :}
+	 | TRUE 	{: System.out.print("true"); :}
+	 | object  	{: :}
+	 | array 	{: :}
+	 | NUMBER:nb 	{: System.out.print(nb);  :}
+;
+member	::= STRING:str nameseparator {: System.out.print(str + ":") ; :} value {: :} 
+;
+list_values ::= value | list_values valueseparator {: System.out.print(","); NL(); :} value {: :}
+;
+list_members ::= member | list_members valueseparator {: System.out.print(","); NL(); :} member {: :}
+;
+array	::= beginarray /* mot vide */ endarray {: System.out.print("{}"); :} 
+	| beginarray {: System.out.print("["); indent++; NL(); :} list_values endarray {: indent--; NL(); System.out.print("]"); :}
+;
+object	::= beginobject /* mot vide */ endobject {: System.out.print("{}"); :}
+	| beginobject {: System.out.print("{"); indent++; NL(); :}  list_members endobject {: indent--; NL(); System.out.print("}"); :}
+;
+beginobject 	::=  ACC_O  		{: :}
+;
+endobject	::=  ACC_F 	 	{: :}
+;
+beginarray	::= CROCHET_O 		{: :}
+;
+endarray	::= CROCHET_F		{: :}
+;
+nameseparator	::= COLON		{: :}
+;
+valueseparator 	::= COMMA		{: :}
+;

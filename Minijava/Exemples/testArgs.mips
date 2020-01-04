@@ -1,0 +1,151 @@
+.text
+   # main:
+main:
+   # t_0 := new Operator
+	addi $sp, $sp, -4
+	sw   $a0, 0($sp)
+	li $a0, 0
+	jal  _new_object
+	sw   $v0, 0($gp)
+	lw   $a0, 0($sp)
+	addi $sp, $sp, 4
+   # param t_0
+   # param 4
+   # param 1
+   # param 2
+   # param 3
+   # param 4
+   # t_1 := call f<6>
+	addi $sp, $sp, -20
+	sw   $fp, 16($sp)
+	sw   $a3, 12($sp)
+	sw   $a2, 8($sp)
+	sw   $a1, 4($sp)
+	sw   $a0, 0($sp)
+	lw   $a0, 0($gp)
+	li   $a1, 4
+	li   $a2, 1
+	li   $a3, 2
+	move $fp, $sp
+	addi $sp, $sp, -56
+	jal  f
+	move $sp, $fp
+	lw   $fp, 16($sp)
+	lw   $a3, 12($sp)
+	lw   $a2, 8($sp)
+	lw   $a1, 4($sp)
+	lw   $a0, 0($sp)
+	addi $sp, $sp, 20
+	sw   $v0, 4($gp)
+   # param t_1
+   # call _system_out_println<1>
+	addi $sp, $sp, -4
+	sw   $a0, 0($sp)
+	lw   $a0, 4($gp)
+	jal  _system_out_println
+	lw   $a0, 0($sp)
+	addi $sp, $sp, 4
+   # call _system_exit<0>
+	li   $v0, 10
+	syscall
+   # f:
+f:
+	sw   $ra ,  -4($fp)
+   # t_2 := a < 1
+	move $v0, $a1
+	li   $v1, 1
+	slt  $v0, $v0, $v1
+	sw   $v0, -44($fp)
+   # iffalse t_2 goto L_0
+	lw   $v0, -44($fp)
+	beq $v0, $zero,L_0
+   # res := 0
+	li   $v0, 0
+	sw   $v0, -40($fp)
+   # goto L_1
+	j L_1
+   # L_0:
+L_0:
+   # t_3 := a - 1
+	move $v0, $a1
+	li   $v1, 1
+	sub  $v0, $v0, $v1
+	sw   $v0, -48($fp)
+   # param this
+   # param t_3
+   # param e
+   # param b
+   # param c
+   # param d
+   # t_4 := call f<6>
+	addi $sp, $sp, -20
+	sw   $fp, 16($sp)
+	sw   $a3, 12($sp)
+	sw   $a2, 8($sp)
+	sw   $a1, 4($sp)
+	sw   $a0, 0($sp)
+	lw   $a0, 0($sp)
+	lw   $a1, -48($fp)
+	lw   $a2, 4($fp)
+	lw   $a3, 8($sp)
+	move $fp, $sp
+	addi $sp, $sp, -56
+	jal  f
+	move $sp, $fp
+	lw   $fp, 16($sp)
+	lw   $a3, 12($sp)
+	lw   $a2, 8($sp)
+	lw   $a1, 4($sp)
+	lw   $a0, 0($sp)
+	addi $sp, $sp, 20
+	sw   $v0, -52($fp)
+   # t_5 := e + t_4
+	lw   $v0, 4($fp)
+	lw   $v1, -52($fp)
+	add  $v0, $v0, $v1
+	sw   $v0, -56($fp)
+   # res := t_5
+	lw   $v0, -56($fp)
+	sw   $v0, -40($fp)
+   # L_1:
+L_1:
+   # return res
+	lw   $ra ,  -4($fp)
+	lw   $v0, -40($fp)
+	jr $ra
+### RUNTIME MIPS ###
+equals:
+   # méthode Object.equals(Object)
+	seq $v0, $a0, $a1
+	jr   $ra
+_system_out_println:
+   # IN  $a0 = integer to print
+   # print integer
+	li   $v0,  1
+	syscall 
+   # print char newline
+	li   $a0, 10
+	li   $v0, 11
+	syscall
+   # end
+	jr   $ra
+_new_object:
+   # IN  $a0 = number of bytes
+   # OUT $v0 = allocated address
+   # malloc (sbrk)
+	li   $v0, 9
+	syscall
+   # initialize with zeros
+	move $t0, $a0
+	move $t1, $v0
+   # do until $t0=0
+_newobj_loop:
+	beq  $t0, $zero, _newobj_exit
+	sb   $zero, 0($t1)
+	addi $t1, $t1,  1 
+	addi $t0, $t0, -1 
+	j    _newobj_loop 
+_newobj_exit:
+   # done
+   # end
+	jr   $ra

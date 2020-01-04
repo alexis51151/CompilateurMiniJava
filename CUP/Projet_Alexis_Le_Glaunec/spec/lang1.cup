@@ -1,0 +1,30 @@
+init with   {: System.out.println("Mon compilo C"); :}
+action code {: void DEBUG(String s) {System.out.println(s);} :}
+
+terminal LITTERAL, TYPE, IDENT, COMA, SEMI, PARENTHESE_O, PARENTHESE_F, ACC_O, ACC_F, WHILE, FOR, IF, ELSE, EQ, OPBIN, UNK;
+nonterminal programme, declaration, parametre, instructions, bloc, instruction, expression, expressions, instruction_if, instruction_while, instruction_for, appel_fonction;
+
+precedence left OPBIN;
+
+programme ::= /* vide */
+    | programme declaration {: :}
+;
+declaration ::= TYPE IDENT SEMI | TYPE IDENT PARENTHESE_O parametre PARENTHESE_F bloc {: DEBUG("Declaration"); :}
+;
+parametre ::= /* mot vide */ | TYPE IDENT | TYPE IDENT COMA parametre {: :}
+;
+instructions ::= /* mot vide */ | instruction instructions {: :}
+;
+bloc ::=  ACC_O instructions ACC_F {: DEBUG("bloc"); :}
+;
+instruction ::=  bloc | SEMI | expression SEMI | instruction_while | instruction_for | instruction_if ; 
+instruction_while ::= WHILE PARENTHESE_O expression PARENTHESE_F instruction {: DEBUG("while"); :}
+;
+instruction_if ::= IF PARENTHESE_O expression PARENTHESE_F instruction ELSE instruction {: DEBUG("if"); :}
+;
+instruction_for ::= FOR PARENTHESE_O expressions PARENTHESE_F instruction {: DEBUG("for"); :}
+;
+expressions ::= expression | expression expressions {: :}
+;
+expression ::=  LITTERAL | PARENTHESE_O expression PARENTHESE_F | IDENT EQ expression | IDENT PARENTHESE_O expression PARENTHESE_F | expression OPBIN expression
+;

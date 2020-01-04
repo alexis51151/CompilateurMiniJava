@@ -1,0 +1,50 @@
+package semantic;
+import java.util.List;
+import java.util.ArrayList;
+
+import syntax.ast.*;
+public class Undefined extends ASTVisitorDefault{
+	private final SemanticTree semanticTree;
+	private boolean undefined;
+	private List<Ident> undefined_list;
+	public Undefined(SemanticTree semanticTree) {
+		this.semanticTree = semanticTree;
+		this.undefined = false;
+		this.undefined_list = new ArrayList<Ident>();
+		undefined();
+	}
+	
+	public void undefined() {
+		this.semanticTree.axiom.accept(this); // Accès à l'AST*
+		if (undefined) {
+			print();
+		}
+	}
+	
+	public void unused() {
+		List<Var> vars = semanticTree.rootScope.getAllVariables();
+		
+	}
+	
+	public void visit(Method n) { // On ne gère pas les méthods pour l'instant
+		
+	}
+	
+	public void visit(Ident n) {
+		if (semanticTree.scopeAttr.get(n) == null) {
+			undefined_list.add(n);
+			this.undefined = true;
+		}
+	}
+	
+	public void print() {
+		String str = "[";
+		for(Ident ident : undefined_list) {
+			str += ident.name;
+			str += ", ";
+		}
+		str += "]";
+		System.out.print(str);
+	}
+
+}

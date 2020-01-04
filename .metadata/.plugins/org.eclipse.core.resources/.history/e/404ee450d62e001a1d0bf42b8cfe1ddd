@@ -1,0 +1,164 @@
+package intermediate;
+
+import main.DEBUG;
+import intermediate.ir.*;
+import syntax.ast.*;
+import semantic.SemanticAttribut;
+import semantic.SemanticTree;
+
+/** Générarion de la forme intermédiaire (Code à 3 adresses).  */
+public class Intermediate extends ASTVisitorDefault {
+  // Input : AST Décoré et Table de symbol AST
+  private final SemanticTree semanticTree;
+
+  /** Stucture de donnée en sortie de la génératrion de code intermédiaire */
+  public IR getResult() { return ir; }
+  private final IR ir;
+
+  // Attribut synthetisee nodeVar = Variable IR Temp pour resultat des expression
+  private final SemanticAttribut<IRVar> varAttr; // nom Variables dans IR
+  private IRVar getVar(ASTNode n) { return varAttr.get(n); }
+  private IRVar setVar(ASTNode n, IRVar var) { return varAttr.set(n, var); }
+ 
+  // Attribut synthétisé utilisé comme portée pour les variables IRtemp
+  private String currentMethod;
+
+  /** Constructeur */
+  public Intermediate(SemanticTree semanticTree) {
+    this.semanticTree = semanticTree;
+    this.ir = new IR(semanticTree);
+    this.varAttr = new SemanticAttribut<>();
+    this.currentMethod=null;
+    semanticTree.axiom.accept(this); // => visite((Raxiome)axiome)
+    if (DEBUG.INTERMED)
+      DEBUG.log(ir);
+  }
+
+  //// Helpers
+  // Ajouter une instruction au programmeIR
+  private void add(IRQuadruple irq) { ir.program.add(irq); }
+ 
+  // Variables IR : label tempo, label nom, Constante, Temp var
+  private IRVar newLabel() { return ir.newLabel(); }
+  private IRVar newLabel(String name) { return ir.newLabel(name); }
+  private IRVar newConst(int value) { return ir.newConst(value); }
+  private IRVar newTemp() { return ir.newTemp(currentMethod); }
+
+  // Variable de l'AST depuis la table de symbole
+  private IRVar lookupVar(String name, ASTNode n) {
+    return semanticTree.scopeAttr.get(n).lookupVariable(name);
+  }
+
+  /////////////////// Visit ////////////////////
+  @Override
+  public void visit(KlassMain n) {
+    currentMethod="main";
+    add(new QLabel(newLabel(currentMethod)));
+    defaultVisit(n);
+    add(new QCall(newLabel("_system_exit"), newConst(0), null));
+    currentMethod=null;
+  }
+
+  @Override
+  public void visit(Method n) {
+    currentMethod=n.methodId.name;
+    add(new QLabelMeth(newLabel(n.methodId.name)));
+    defaultVisit(n);
+    add(new QReturn(getVar(n.returnExp)));
+    currentMethod=null;
+  }
+
+  @Override
+  public void visit(ExprCall n) {
+    defaultVisit(n);
+    add(new QParam(getVar(n.receiver))); // this
+    int nbArg = 1;
+    for (ASTNode f : n.args) {
+      add(new QParam(getVar(f)));
+      nbArg++;
+    }
+    setVar(n, newTemp());
+    add(new QCall(newLabel(n.methodId.name), newConst(nbArg), getVar(n)));
+  }
+
+  @Override
+  public void visit(ExprIdent n) {
+    setVar(n, lookupVar(n.varId.name,n));
+  }
+
+  @Override
+  public void visit(ExprLiteralBool n) {
+    setVar(n, newConst(n.value ? 1 : 0));
+  }
+
+  @Override
+  public void visit(ExprLiteralInt n) {
+    setVar(n, newConst(n.value));
+  }
+
+  @Override
+  public void visit(ExprNew n) {
+    defaultVisit(n);
+    setVar(n, newTemp());
+    add(new QNew(newLabel(n.klassId.name), getVar(n)));
+  }
+
+  @Override
+  public void visit(ExprOpBin n) {
+    defaultVisit(n);
+    setVar(n, newTemp());
+    add(new QAssign(n.op, getVar(n.expr1), getVar(n.expr2), getVar(n)));
+  }
+
+  @Override
+  public void visit(ExprOpUn n) {
+    defaultVisit(n);
+    setVar(n, newTemp());
+    add(new QAssignUnary(n.op, getVar(n.expr), getVar(n)));
+  }
+
+  @Override
+  public void visit(StmtAssign n) {
+    defaultVisit(n);
+    setVar(n, lookupVar(n.varId.name,n));
+    add(new QCopy(getVar(n.value), getVar(n)));
+  }
+  
+  @Override
+  public void visit(StmtBlock n) {
+    defaultVisit(n);
+  }
+
+  @Override
+  public void visit(StmtIf n) {
+    IRVar l1 = newLabel();
+    IRVar l2 = newLabel();
+    n.test.accept(this);
+    add(new QJumpCond(l1, getVar(n.test)));
+    n.ifTrue.accept(this); // true
+    add(new QJump(l2));
+    add(new QLabel(l1));
+    n.ifFalse.accept(this); // false
+    add(new QLabel(l2));
+  }
+
+  @Override
+  public void visit(StmtPrint n) {
+    defaultVisit(n);
+    add(new QParam(getVar(n.expr)));
+    add(new QCall(newLabel("_system_out_println"), newConst(1), null));
+  }
+
+  @Override
+  public void visit(StmtWhile n) {
+    IRVar l1 = newLabel();
+    IRVar l2 = newLabel();
+    add(new QLabel(l1));
+    n.test.accept(this);
+    add(new QJumpCond(l2, getVar(n.test)));
+    n.body.accept(this);
+    add(new QJump(l1));
+    add(new QLabel(l2));
+  }
+
+}

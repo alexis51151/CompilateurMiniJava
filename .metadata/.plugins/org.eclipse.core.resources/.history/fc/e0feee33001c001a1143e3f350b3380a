@@ -1,0 +1,13 @@
+package semantic;
+import syntax.ast.*;
+public class Undefined extends ASTVisitorDefault{
+	private final SemanticTree semanticTree;
+
+	public Undefined(SemanticTree semanticTree) {
+	    axiom.accept(this); // => visite((Axiom)axiom)
+	}
+	public void visit(Klass n) {
+		
+	}
+
+}

@@ -1,0 +1,37 @@
+init with 	{: System.out.println("Calculatrice sans ambiguite :"); :}
+action code 	{: 
+	int opbin(Character s, Integer e1, Integer e2) {
+		switch(s) {
+			case '+':
+				return e1 + e2;
+			case '-':
+				return e1 - e2;
+			case '/':
+				return e1 / e2;
+			case '*':
+				return e1 * e2;
+			default:
+				return e1 % e2;
+		}		
+	}
+:};
+terminal Integer ENTIER;
+terminal Character OPBIN;
+nonterminal Integer args;
+terminal PARENTH_O, PARENTH_F, NL, MIN, MAX, COMMA, ERROR;
+nonterminal axiom;
+nonterminal Integer expr;
+
+axiom	::= /* vide */ 
+	| axiom expr:e 		{: System.out.println(e); :} NL
+	| axiom ERROR NL 	{: System.out.println("BAD"); :}
+;
+
+args	::= expr:e 		{: RESULT=e; :} 
+	| args:a COMMA expr:b {: RESULT=(a>b)?a:b; :}
+;
+expr   	::= ENTIER:e           	{: RESULT=e; :}
+       	|  PARENTH_O expr:e1 OPBIN:s expr:e2 PARENTH_F 	{: RESULT=opbin(s,e1,e2); :}
+	|  MIN PARENTH_O expr:a COMMA expr:b PARENTH_F 	{: RESULT=(a>b)?b:a; :}
+	|  MAX PARENTH_O args:a PARENTH_F 		{: RESULT=a; :}
+;

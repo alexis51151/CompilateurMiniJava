@@ -1,0 +1,15 @@
+package codegen;
+
+import intermediate.IR;
+import intermediate.ir.*;
+import allocator.Allocator;
+
+// Override IR2MIPS class :
+public class IR2MIPSPlus extends IR2MIPS {
+  public IR2MIPSPlus(IR ir, Allocator allocator, MIPS mips) {
+    super(ir, allocator, mips);
+  }
+
+  ///////// OVERRIDE VISIT ///////////////
+  //...
+}  

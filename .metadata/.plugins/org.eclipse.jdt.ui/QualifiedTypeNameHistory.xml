@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<qualifiedTypeNameHistroy>
+    <fullyQualifiedTypeName name="syntax.ast.Var"/>
+    <fullyQualifiedTypeName name="semantic.TestIdent"/>
+    <fullyQualifiedTypeName name="syntax.ast.ASTVisitorDefault"/>
+    <fullyQualifiedTypeName name="syntax.ast.ASTNode"/>
+    <fullyQualifiedTypeName name="syntax.ast.Klass"/>
+    <fullyQualifiedTypeName name="syntax.ast.Method"/>
+    <fullyQualifiedTypeName name="semantic.symtab.TestScope"/>
+    <fullyQualifiedTypeName name="java.util.ArrayList"/>
+    <fullyQualifiedTypeName name="intermediate.ir.QLabel"/>
+    <fullyQualifiedTypeName name="intermediate.ir.QLabelMeth"/>
+    <fullyQualifiedTypeName name="intermediate.ir.QParam"/>
+    <fullyQualifiedTypeName name="intermediate.ir.QReturn"/>
+    <fullyQualifiedTypeName name="syntax.ast.ExprOpBin"/>
+    <fullyQualifiedTypeName name="syntax.ast.ExprOpUn"/>
+    <fullyQualifiedTypeName name="intermediate.ir.QAssignUnary"/>
+    <fullyQualifiedTypeName name="syntax.ast.ExprIdent"/>
+    <fullyQualifiedTypeName name="syntax.ast.ExprNew"/>
+    <fullyQualifiedTypeName name="syntax.ast.Formal"/>
+    <fullyQualifiedTypeName name="intermediate.ir.QAssign"/>
+    <fullyQualifiedTypeName name="org.graalvm.compiler.core.common.type.ArithmeticOpTable.Op"/>
+    <fullyQualifiedTypeName name="main.OPER"/>
+    <fullyQualifiedTypeName name="intermediate.ir.QNew"/>
+    <fullyQualifiedTypeName name="intermediate.ir.IRVar"/>
+    <fullyQualifiedTypeName name="main.CompilerException"/>
+</qualifiedTypeNameHistroy>

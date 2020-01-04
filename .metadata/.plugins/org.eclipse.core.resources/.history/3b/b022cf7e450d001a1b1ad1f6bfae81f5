@@ -1,0 +1,7 @@
+
+public class Args_expr extends Args{
+	public Args_expr(Args arg) {
+		this.value = arg.eval();
+	}
+
+}

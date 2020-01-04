@@ -1,0 +1,57 @@
+init with 	{: System.out.println("Calculatrice sans ambiguite :"); :}
+action code 	{: 
+	int opbin(Character s, Integer e1, Integer e2) {
+		switch(s) {
+			case '+':
+				return e1 + e2;
+			case '-':
+				return e1 - e2;
+			case '/':
+				return e1 / e2;
+			case '*':
+				return e1 * e2;
+			default:
+				return e1 % e2;
+		}		
+	}
+:};
+terminal Integer ENTIER;
+terminal Character OPBIN;
+nonterminal Integer args;
+terminal PARENTH_O, PARENTH_F, NL, MIN, MAX, COMMA, ERROR;
+terminal Character MINUS, PLUS, TIMES, DIV, MOD;
+nonterminal axiom;
+nonterminal Integer expr;
+nonterminal Character op;
+
+precedence left MINUS, PLUS;
+precedence left TIMES, DIV, MOD;
+
+axiom	::= /* vide */ 
+	| axiom expr:e 		{: System.out.println(e); :} NL
+	| axiom ERROR NL 	{: System.out.println("BAD"); :}
+;
+
+args	::= expr:e 		{: RESULT = new AST("Regle expr",e); :} 
+	| args:a COMMA expr:b {: RESULT = new AST("Regle virg",a,b); :}
+;
+
+op	::= MINUS:e {: RESULT = new AST("MINUS"); :}
+	| PLUS:e {: RESULT = new AST("PLUS"); :}
+	| TIMES:e {: RESULT = new AST("TIMES"); :}
+	| DIV:e {: RESULT = new AST("DIV"); :}
+	| MOD:e {: RESULT = new AST("MOD"); :}
+;
+
+var 	::= VAR:e EQ {: RESULT = new AST("Regle eq",e); :}
+;
+expr   	::= ENTIER:e           			{: RESULT = new AST("Regle ent", new AST("ENTIER")); :}
+	| expr:e1 PLUS:s expr:e2			{: RESULT = new AST("Regle +",e1,new AST("PLUS"),e2) ; :}
+	| expr:e1 MINUS:s expr:e2			{: RESULT = new AST("Regle -",e1,new AST("MINUS"),e2) ; :}
+	| expr:e1 TIMES:s expr:e2			{: RESULT = new AST("Regle *",e1,new AST("TIMES"),e2); :}
+	| expr:e1 DIV:s expr:e2				{: RESULT = new AST("Regle /",e1,new AST("DIV"),e2); :}
+	| expr:e1 MOD:s expr:e2				{: RESULT = new AST("Regle %",e1,new AST("MOD"),e2) ; :}
+    | PARENTH_O expr:e1 op:s expr:e2 PARENTH_F 	{: RESULT = new AST("Regle par",e1,s,e2); :}
+	| MIN PARENTH_O expr:a COMMA expr:b PARENTH_F 	{: RESULT = new AST("Regle min", new AST("PARENTH_O"), a,b, new AST("PARENTH_F")); :}
+	| MAX PARENTH_O args:a PARENTH_F 		{: RESULT = new AST("Regle max",new AST("PARENTH_O"),a, new AST("PARENTH_F")); :}
+;

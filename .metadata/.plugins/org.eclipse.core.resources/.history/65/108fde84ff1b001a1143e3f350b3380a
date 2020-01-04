@@ -1,0 +1,9 @@
+package semantic;
+
+public class Undefined extends ASTVisitorDefault{
+
+	public Undefined() {
+		// TODO Auto-generated constructor stub
+	}
+
+}

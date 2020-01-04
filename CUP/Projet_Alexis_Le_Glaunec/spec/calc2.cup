@@ -1,0 +1,57 @@
+init with 	{: System.out.println("Calculatrice sans ambiguite :"); :}
+action code 	{: 
+	int opbin(Character s, Integer e1, Integer e2) {
+		switch(s) {
+			case '+':
+				return e1 + e2;
+			case '-':
+				return e1 - e2;
+			case '/':
+				return e1 / e2;
+			case '*':
+				return e1 * e2;
+			default:
+				return e1 % e2;
+		}		
+	}
+:};
+terminal Integer ENTIER;
+terminal Character OPBIN;
+nonterminal Integer args;
+terminal PARENTH_O, PARENTH_F, NL, MIN, MAX, COMMA, ERROR;
+terminal Character MINUS, PLUS, TIMES, DIV, MOD;
+nonterminal axiom;
+nonterminal Integer expr;
+nonterminal Character op;
+
+precedence left MINUS, PLUS;
+precedence left TIMES, DIV, MOD;
+
+axiom	::= /* vide */ 
+	| axiom expr:e 		{: System.out.println(e); :} NL
+	| axiom ERROR NL 	{: System.out.println("BAD"); :}
+;
+
+args	::= expr:e 		{: RESULT=e; :} 
+	| args:a COMMA expr:b {: RESULT=(a>b)?a:b; :}
+;
+
+op	::= MINUS:e {: RESULT=e; :}
+	| PLUS:e {: RESULT=e; :}
+	| TIMES:e {: RESULT=e; :}
+	| DIV:e {: RESULT=e; :}
+	| MOD:e {: RESULT=e; :}
+;
+
+var 	::= VAR:e EQ {: RESULT=e; :}
+;
+expr   	::= ENTIER:e           	{: RESULT=e; :}
+	| expr:e1 PLUS:s expr:e2			{: RESULT=opbin(s,e1,e2); :}
+	| expr:e1 MINUS:s expr:e2			{: RESULT=opbin(s,e1,e2); :}
+	| expr:e1 TIMES:s expr:e2			{: RESULT=opbin(s,e1,e2); :}
+	| expr:e1 DIV:s expr:e2				{: RESULT=opbin(s,e1,e2); :}
+	| expr:e1 MOD:s expr:e2				{: RESULT=opbin(s,e1,e2); :}
+       	| PARENTH_O expr:e1 op:s expr:e2 PARENTH_F 	{: RESULT=opbin(s,e1,e2); :}
+	| MIN PARENTH_O expr:a COMMA expr:b PARENTH_F 	{: RESULT=(a>b)?b:a; :}
+	| MAX PARENTH_O args:a PARENTH_F 		{: RESULT=a; :}
+;

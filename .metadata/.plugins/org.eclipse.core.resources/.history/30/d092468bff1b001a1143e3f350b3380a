@@ -1,0 +1,9 @@
+package semantic;
+import syntax.ast.*;
+public class Undefined extends syntax.ast.ASTVisitorDefault{
+
+	public Undefined() {
+		// TODO Auto-generated constructor stub
+	}
+
+}

@@ -1,0 +1,34 @@
+package semantic;
+import java.util.List;
+import java.util.ArrayList;
+
+import syntax.ast.*;
+public class Undefined extends ASTVisitorDefault{
+	private final SemanticTree semanticTree;
+	private boolean undefined;
+	private List<Ident> undefined_list;
+	public Undefined(SemanticTree semanticTree) {
+		this.semanticTree = semanticTree;
+		this.undefined = false;
+		this.undefined_list = new List<Ident>();
+		is_undefined();
+	}
+	
+	public void is_undefined() {
+		this.semanticTree.axiom.accept(this); // Accès à l'AST*
+		if (undefined) {
+			System.out.println("Au moins un identifiant est non défini");
+		}
+	}
+	
+	public void visit(Method n) { // On ne gère pas les méthods pour l'instant
+		
+	}
+	
+	public void visit(Ident n) {
+		if (semanticTree.scopeAttr.get(n) == null) {
+			this.undefined = true;
+		}
+	}
+
+}

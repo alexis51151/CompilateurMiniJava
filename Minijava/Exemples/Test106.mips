@@ -1,0 +1,199 @@
+.text
+   # main:
+main:
+   # t_0 := new Test2
+	addi $sp, $sp, -4
+	sw   $a0, 0($sp)
+	li $a0, 0
+	jal  _new_object
+	sw   $v0, 0($gp)
+	lw   $a0, 0($sp)
+	addi $sp, $sp, 4
+   # param t_0
+   # param 0
+   # t_1 := call Start<2>
+	addi $sp, $sp, -20
+	sw   $fp, 16($sp)
+	sw   $a3, 12($sp)
+	sw   $a2, 8($sp)
+	sw   $a1, 4($sp)
+	sw   $a0, 0($sp)
+	lw   $a0, 0($gp)
+	li   $a1, 0
+	move $fp, $sp
+	addi $sp, $sp, -76
+	jal  Start
+	move $sp, $fp
+	lw   $fp, 16($sp)
+	lw   $a3, 12($sp)
+	lw   $a2, 8($sp)
+	lw   $a1, 4($sp)
+	lw   $a0, 0($sp)
+	addi $sp, $sp, 20
+	sw   $v0, 4($gp)
+   # param t_1
+   # call _system_out_println<1>
+	addi $sp, $sp, -4
+	sw   $a0, 0($sp)
+	lw   $a0, 4($gp)
+	jal  _system_out_println
+	lw   $a0, 0($sp)
+	addi $sp, $sp, 4
+   # t_2 := new Test2
+	addi $sp, $sp, -4
+	sw   $a0, 0($sp)
+	li $a0, 0
+	jal  _new_object
+	sw   $v0, 8($gp)
+	lw   $a0, 0($sp)
+	addi $sp, $sp, 4
+   # param t_2
+   # param 1
+   # t_3 := call Start<2>
+	addi $sp, $sp, -20
+	sw   $fp, 16($sp)
+	sw   $a3, 12($sp)
+	sw   $a2, 8($sp)
+	sw   $a1, 4($sp)
+	sw   $a0, 0($sp)
+	lw   $a0, 8($gp)
+	li   $a1, 1
+	move $fp, $sp
+	addi $sp, $sp, -76
+	jal  Start
+	move $sp, $fp
+	lw   $fp, 16($sp)
+	lw   $a3, 12($sp)
+	lw   $a2, 8($sp)
+	lw   $a1, 4($sp)
+	lw   $a0, 0($sp)
+	addi $sp, $sp, 20
+	sw   $v0, 12($gp)
+   # param t_3
+   # call _system_out_println<1>
+	addi $sp, $sp, -4
+	sw   $a0, 0($sp)
+	lw   $a0, 12($gp)
+	jal  _system_out_println
+	lw   $a0, 0($sp)
+	addi $sp, $sp, 4
+   # call _system_exit<0>
+	li   $v0, 10
+	syscall
+   # Start:
+Start:
+	sw   $ra ,  -4($fp)
+   # a := 0
+	li   $v0, 0
+	sw   $v0, -40($fp)
+   # b := n
+	move $v0, $a1
+	sw   $v0, -44($fp)
+   # t_4 := a < b
+	lw   $v0, -40($fp)
+	lw   $v1, -44($fp)
+	slt  $v0, $v0, $v1
+	sw   $v0, -48($fp)
+   # t_5 := ! t_4
+	lw   $v0, -48($fp)
+	seq  $v0, $zero, $v0
+	sw   $v0, -52($fp)
+   # iffalse t_5 goto L_0
+	lw   $v0, -52($fp)
+	beq $v0, $zero,L_0
+   # a := 7
+	li   $v0, 7
+	sw   $v0, -40($fp)
+   # goto L_1
+	j L_1
+   # L_0:
+L_0:
+   # a := 2
+	li   $v0, 2
+	sw   $v0, -40($fp)
+   # L_1:
+L_1:
+   # L_2:
+L_2:
+   # t_6 := a < 6
+	lw   $v0, -40($fp)
+	li   $v1, 6
+	slt  $v0, $v0, $v1
+	sw   $v0, -56($fp)
+   # iffalse t_6 goto L_3
+	lw   $v0, -56($fp)
+	beq $v0, $zero,L_3
+   # t_7 := a + 1
+	lw   $v0, -40($fp)
+	li   $v1, 1
+	add  $v0, $v0, $v1
+	sw   $v0, -60($fp)
+   # a := t_7
+	lw   $v0, -60($fp)
+	sw   $v0, -40($fp)
+   # goto L_2
+	j L_2
+   # L_3:
+L_3:
+   # t_8 := 2 * b
+	li   $v0, 2
+	lw   $v1, -44($fp)
+	mult $v0, $v1
+	mflo $v0
+	sw   $v0, -64($fp)
+   # t_9 := a + t_8
+	lw   $v0, -40($fp)
+	lw   $v1, -64($fp)
+	add  $v0, $v0, $v1
+	sw   $v0, -68($fp)
+   # t_10 := t_9 - 1
+	lw   $v0, -68($fp)
+	li   $v1, 1
+	sub  $v0, $v0, $v1
+	sw   $v0, -72($fp)
+   # t_11 := a * t_10
+	lw   $v0, -40($fp)
+	lw   $v1, -72($fp)
+	mult $v0, $v1
+	mflo $v0
+	sw   $v0, -76($fp)
+   # return t_11
+	lw   $ra ,  -4($fp)
+	lw   $v0, -76($fp)
+	jr $ra
+### RUNTIME MIPS ###
+equals:
+   # méthode Object.equals(Object)
+	seq $v0, $a0, $a1
+	jr   $ra
+_system_out_println:
+   # IN  $a0 = integer to print
+   # print integer
+	li   $v0,  1
+	syscall 
+   # print char newline
+	li   $a0, 10
+	li   $v0, 11
+	syscall
+   # end
+	jr   $ra
+_new_object:
+   # IN  $a0 = number of bytes
+   # OUT $v0 = allocated address
+   # malloc (sbrk)
+	li   $v0, 9
+	syscall
+   # initialize with zeros
+	move $t0, $a0
+	move $t1, $v0
+   # do until $t0=0
+_newobj_loop:
+	beq  $t0, $zero, _newobj_exit
+	sb   $zero, 0($t1)
+	addi $t1, $t1,  1 
+	addi $t0, $t0, -1 
+	j    _newobj_loop 
+_newobj_exit:
+   # done
+   # end
+	jr   $ra

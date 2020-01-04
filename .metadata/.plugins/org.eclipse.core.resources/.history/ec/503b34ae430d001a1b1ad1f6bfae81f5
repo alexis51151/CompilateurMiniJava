@@ -1,0 +1,7 @@
+
+public class Max extends Expr{
+	public Max(Args arg) {
+		this.value = e1.eval() / e2.eval();
+	}
+
+}

@@ -1,0 +1,19 @@
+/* Exexmples de commentaure C */
+
+/* inutile ? */ int j = 0;  /* TODO */
+
+int resu = 42 ; /** la reponse .... **/
+
+/* Dangereux
+//   int i =  666; 
+*/
+
+for ( i = 1; i< resu; i++) {
+    /* 0*0=0 ! */
+    }
+
+print(resu); // commentaire C++
+
+/* enfin fini */
+bye();
+

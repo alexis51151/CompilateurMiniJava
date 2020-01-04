@@ -1,0 +1,28 @@
+package semantic;
+import syntax.ast.*;
+public class Undefined extends ASTVisitorDefault{
+	private final SemanticTree semanticTree;
+	private boolean undefined;
+	public Undefined(SemanticTree semanticTree) {
+		this.semanticTree = semanticTree;
+		this.undefined = false;
+	}
+	
+	public boolean is_undefined() {
+		semanticTree.axiom.accept(this); // Accès à l'AST
+		
+		return false;
+		
+	}
+	
+	public void visit(Method n) { // On ne gère pas les méthods pour l'instant
+		
+	}
+	
+	public void visit(Ident n) {
+		if (semanticTree.scopeAttr.get(n) != null) {
+			
+		}
+	}
+
+}

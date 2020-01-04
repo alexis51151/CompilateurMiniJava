@@ -1,0 +1,58 @@
+package semantic;
+import java.util.List;
+
+import semantic.symtab.InfoVar;
+import semantic.symtab.Scope;
+
+import java.util.ArrayList;
+import java.util.Collection;
+
+import syntax.ast.*;
+public class Undefined extends ASTVisitorDefault{
+	private final SemanticTree semanticTree;
+	private boolean undefined;
+	private List<Ident> undefined_list;
+	Collection<InfoVar> vars; 
+
+	public Undefined(SemanticTree semanticTree) {
+		this.semanticTree = semanticTree;
+		this.undefined = false;
+		this.undefined_list = new ArrayList<Ident>();
+		this.vars = semanticTree.rootScope.getAllVariables();
+		this.semanticTree.axiom.accept(this); // Accès à l'AST
+		print_undefined();
+
+	}
+	// Attribut "Scope"
+	private void setScope(ASTNode n, Scope sc) { semanticTree.scopeAttr.set(n, sc); }
+	private Scope getScope(ASTNode n) { return semanticTree.scopeAttr.get(n);}
+		
+	public  void visit(ExprIdent n) {
+		Scope sc = getScope(n);
+		InfoVar iv = sc.lookupVariable(n.varId.name);
+		vars.remove(iv);
+		n.accept(this);
+	}
+	
+	public void visit(Method n) { // On ne gère pas les méthods pour l'instant
+		
+	}
+	
+	public void visit(Ident n) {
+		if (semanticTree.scopeAttr.get(n) == null) {
+			undefined_list.add(n);
+			this.undefined = true;
+		}
+	}
+	
+	public void print_undefined() {
+		String str = "[";
+		for(Ident ident : undefined_list) {
+			str += ident.name;
+			str += ", ";
+		}
+		str += "]";
+		System.out.print(str);
+	}
+
+}

@@ -1,0 +1,5 @@
+
+public class Args {
+	public int value;
+	
+}

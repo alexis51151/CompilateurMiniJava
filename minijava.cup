@@ -1,0 +1,179 @@
+package syntax;
+import syntax.ast.*; //  definition de l'AST
+
+action code {:
+// Classes utilitaires pour constructions de paires de listes
+  class VarOrMeth { // membres de classes = ( fVar | Method) *
+    ASTList<Var> vars;     ASTList<Method> methods;
+    VarOrMeth () { this.vars = new ASTList<>();  this.methods = new ASTList<>(); }
+  }
+  class VarOrStmt { // membre de methodes ou de blocs = ( Var | Stmt ) *
+    ASTList<Var> vars;     ASTList<Stmt> stmts;
+    VarOrStmt () { this.vars = new ASTList<>();  this.stmts = new ASTList<>(); }
+  }
+:};
+
+terminal SEP, LC, RC, LP, RP, LB, RB, POINT, COMMA ; // ;{}()[].,
+terminal CLASS, MAIN, PRINTLN, PUBLIC, STATIC, STRING,  VOID ;
+terminal Integer LIT_INT ;
+terminal String  IDENT ;
+terminal AND, LESS, PLUS, MINUS, TIMES, NOT;
+terminal NEW;
+terminal EQ;
+terminal Boolean LIT_BOOL;
+terminal EXTENDS, BOOLEAN, INT, IF, WHILE, THIS, RETURN, ELSE, LENGTH;
+
+nonterminal Axiom     axiom;
+nonterminal KlassMain klassMain;
+nonterminal Ident     ident;
+nonterminal Stmt      stmt; // production multiregle = Classe Abstraite
+nonterminal Expr      expr; // production multiregle = Classe Abstraite
+nonterminal ASTList<Klass>  klassList;
+nonterminal Klass klass;
+nonterminal Ident parent;
+nonterminal VarOrMeth klassBody;
+nonterminal Method method;
+nonterminal Type type;
+nonterminal ASTList<Formal> formalArgs;
+nonterminal VarOrStmt methodBody;
+nonterminal VarOrStmt methodBodyList;
+nonterminal VarOrMeth klassBodyList;
+nonterminal ASTList<Formal> formalArgsList;
+nonterminal Var variable;
+nonterminal ASTList<Expr> args;
+nonterminal ASTList<Expr> argsList;
+
+
+
+precedence left AND;
+precedence left LESS;
+precedence left PLUS, MINUS;
+precedence left TIMES;
+precedence right NOT;
+
+///////////// Productions
+axiom ::= klassMain:a klassList:z
+           {: RESULT = new Axiom(a, z);
+              RESULT.addPosition(axleft, zxright); :}
+;
+klassMain ::= CLASS:a ident:id LC
+                PUBLIC STATIC VOID MAIN
+                  LP STRING LB RB ident:arg RP LC stmt:i RC
+              RC:z
+           {: RESULT = new KlassMain(id, arg, i);
+              RESULT.addPosition(axleft, zxright); :}
+;
+klassList ::= /* vide */
+                {: RESULT = new ASTList<>(); :}
+              | klassList:a klass:b
+                {: a.add(b); RESULT = a; :}
+;
+
+klass ::= CLASS ident:a parent:b LC klassBody:c  RC 
+			{: RESULT = new Klass(a,b,c.vars,c.methods); :}
+;
+
+parent ::= /* vide */ {: RESULT = new Ident("Object"); :}
+		  | EXTENDS IDENT:a {: RESULT = new Ident(a); :}
+;
+
+klassBody ::= /* vide */ {: RESULT = new VarOrMeth(); :}
+		  | klassBodyList:a {: RESULT = a; :}
+;
+
+klassBodyList ::= variable:a {: RESULT = new VarOrMeth(); RESULT.vars.add(a); :}
+				| method:a {: RESULT = new VarOrMeth(); RESULT.methods.add(a); :}
+				| variable:a klassBodyList:b {: b.vars.add(a); RESULT = b; :}
+				| method:a klassBodyList:b {: b.methods.add(a); RESULT = b; :}
+;
+
+method ::= PUBLIC type:a ident:b LP formalArgs:c RP LC methodBody:d RETURN expr:e SEP RC
+			{: RESULT = new Method(a,b,c,d.vars, d.stmts, e); :}
+;
+
+type ::= BOOLEAN {: RESULT = new Type("boolean"); :}
+		| INT	 {: RESULT = new Type("int"); :}
+		| ident:a  {: RESULT = new Type(a.name); :}		
+;
+
+formalArgs ::= /* vide */ {: new ASTList<Formal>(); :}
+			| formalArgsList:a {: RESULT = a; :}
+;
+
+formalArgsList ::= type:a ident:b {: RESULT = new ASTList<Formal>(); RESULT.add(new Formal(a,b)); :}
+				| type:a ident:b COMMA formalArgsList:c {: c.add(new Formal(a,b)); RESULT = c; :}
+;
+
+methodBody ::= /* vide */ {: new VarOrStmt(); :}
+			| methodBodyList:a {: RESULT = a; :}
+
+;
+
+methodBodyList ::= variable:a {: RESULT = new VarOrStmt(); RESULT.vars.add(a); :}
+				| stmt:a {: RESULT = new VarOrStmt(); RESULT.stmts.add(a); :}
+				| variable:a methodBodyList:b {: b.vars.add(a); RESULT = b; :}
+				| stmt:a methodBodyList:b {: b.stmts.add(a); RESULT = b;  :}
+;
+
+variable ::= type:a ident:b SEP {: RESULT = new Var(a,b); :}
+;
+
+ident ::= IDENT:a
+           {: RESULT = new Ident(a);
+              RESULT.addPosition(axleft,axright); :}
+;
+stmt ::= PRINTLN:a LP expr:b RP SEP:x
+           {: RESULT = new StmtPrint(b);
+              RESULT.addPosition(axleft, xxright); :}
+		| ident:a EQ expr:b SEP
+		   {: RESULT = new StmtAssign(a,b); :}
+		| LC methodBody:a RC
+		   {: RESULT = new StmtBlock(a.vars, a.stmts); :}
+		| IF LP expr:a RP stmt:b ELSE stmt:c 
+		   {: RESULT = new StmtIf(a,b,c); :}
+		| WHILE LP expr:a RP stmt:b 
+		   {: RESULT = new StmtWhile(a,b); :}
+;
+expr ::= LIT_INT:a
+           {: RESULT = new ExprLiteralInt(a);
+              RESULT.addPosition(axleft, axright); :}
+		| LP expr:a RP  
+			{: RESULT = a; 
+			   RESULT.addPosition(axleft,axright); :}
+		| expr:a AND expr:b 
+			{: RESULT = new ExprOpBin(a, main.OPER.AND,b); :}
+		| expr:a LESS expr:b 
+			{: RESULT = new ExprOpBin(a, main.OPER.LESS,b); :}
+		| expr:a PLUS expr:b 
+			{: RESULT = new ExprOpBin(a, main.OPER.PLUS,b); :}
+		| expr:a MINUS expr:b 
+			{: RESULT = new ExprOpBin(a, main.OPER.MINUS ,b); :}
+		| expr:a TIMES expr:b 
+			{: RESULT = new ExprOpBin(a, main.OPER.TIMES,b); :}
+		| expr:a NOT expr:b 
+			{: RESULT = new ExprOpBin(a, main.OPER.NOT,b); :}
+		| expr:a POINT ident:b LP args:c RP 
+			{: RESULT = new ExprCall(a,b,c); :}
+		| NEW ident:a LP RP
+			{: RESULT = new ExprNew(a); :}
+		| ident:a 
+			{: RESULT = new ExprIdent(a); :}
+		| MINUS LIT_INT:a 
+			{: RESULT = new ExprLiteralInt(-a); :}
+		| LIT_BOOL:a 
+			{: RESULT = new ExprLiteralBool(a); :}
+		| NOT expr:a
+			{: RESULT = new ExprOpUn(main.OPER.NOT,a); :}
+		| THIS 
+			{: RESULT = new ExprIdent(new Ident("this")); :}
+;
+
+args ::= /* vide */ 
+		   {: RESULT = new ASTList<Expr>(); :}
+		| argsList:a {: RESULT = a; :}
+;
+
+argsList ::= expr:a {: RESULT = new ASTList<Expr>(); RESULT.add(a); :}
+		|  argsList:b COMMA expr:a  {:  RESULT = b; b.add(a); :}
+
+;

@@ -1,0 +1,7 @@
+#!/bin/bash
+# Running java with cup-runtime in a Cup project
+readlinkf() { perl -MCwd -le 'print Cwd::abs_path shift' "$1";}
+LIBCOMPIL=$(dirname $(dirname $(readlinkf $0 ) ) )
+
+java -cp ./bin:${LIBCOMPIL}/lib/java-cup-runtime.jar  $@
+

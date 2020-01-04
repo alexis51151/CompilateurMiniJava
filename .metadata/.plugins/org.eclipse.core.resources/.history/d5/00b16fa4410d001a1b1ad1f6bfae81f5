@@ -1,0 +1,14 @@
+
+public class Entier extends Expr{
+	private int value;
+	
+	public Entier(int value) {
+		this.value = value;
+	}
+	@Override
+	public int eval() {
+		// TODO Auto-generated method stub
+		return(this.value);
+	}
+
+}

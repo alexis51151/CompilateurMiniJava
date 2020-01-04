@@ -1,0 +1,8 @@
+import Math;
+
+public class Min extends Expr{
+	public Min(Expr e1, Expr e2) {
+		this.value = min(e1.eval(),e2.eval());
+	}
+
+}

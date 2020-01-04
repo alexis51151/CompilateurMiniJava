@@ -1,0 +1,566 @@
+.text
+   # main:
+main:
+   # t_0 := new Peano
+	addi $sp, $sp, -4
+	sw   $a0, 0($sp)
+	li $a0, 4
+	jal  _new_object
+	sw   $v0, 0($gp)
+	lw   $a0, 0($sp)
+	addi $sp, $sp, 4
+   # param t_0
+   # t_1 := call test<1>
+	addi $sp, $sp, -20
+	sw   $fp, 16($sp)
+	sw   $a3, 12($sp)
+	sw   $a2, 8($sp)
+	sw   $a1, 4($sp)
+	sw   $a0, 0($sp)
+	lw   $a0, 0($gp)
+	move $fp, $sp
+	addi $sp, $sp, -80
+	jal  test
+	move $sp, $fp
+	lw   $fp, 16($sp)
+	lw   $a3, 12($sp)
+	lw   $a2, 8($sp)
+	lw   $a1, 4($sp)
+	lw   $a0, 0($sp)
+	addi $sp, $sp, 20
+	sw   $v0, 4($gp)
+   # param t_1
+   # call _system_out_println<1>
+	addi $sp, $sp, -4
+	sw   $a0, 0($sp)
+	lw   $a0, 4($gp)
+	jal  _system_out_println
+	lw   $a0, 0($sp)
+	addi $sp, $sp, 4
+   # call _system_exit<0>
+	li   $v0, 10
+	syscall
+   # set:
+set:
+	sw   $ra ,  -4($fp)
+   # кукла := doll
+	move $v0, $a1
+	sw   $v0, 0($a0)
+   # return this
+	lw   $ra ,  -4($fp)
+	move $v0, $a0
+	jr $ra
+   # get:
+get:
+	sw   $ra ,  -4($fp)
+   # return кукла
+	lw   $ra ,  -4($fp)
+	lw   $v0, 0($a0)
+	jr $ra
+   # test:
+test:
+	sw   $ra ,  -4($fp)
+   # t_2 := new Матрёшка
+	addi $sp, $sp, -4
+	sw   $a0, 0($sp)
+	li $a0, 4
+	jal  _new_object
+	sw   $v0, -48($fp)
+	lw   $a0, 0($sp)
+	addi $sp, $sp, 4
+   # НОЛЬ := t_2
+	lw   $v0, -48($fp)
+	sw   $v0, 0($a0)
+   # param this
+   # param 5
+   # t_3 := call init<2>
+	addi $sp, $sp, -20
+	sw   $fp, 16($sp)
+	sw   $a3, 12($sp)
+	sw   $a2, 8($sp)
+	sw   $a1, 4($sp)
+	sw   $a0, 0($sp)
+	lw   $a0, 0($sp)
+	li   $a1, 5
+	move $fp, $sp
+	addi $sp, $sp, -60
+	jal  init
+	move $sp, $fp
+	lw   $fp, 16($sp)
+	lw   $a3, 12($sp)
+	lw   $a2, 8($sp)
+	lw   $a1, 4($sp)
+	lw   $a0, 0($sp)
+	addi $sp, $sp, 20
+	sw   $v0, -52($fp)
+   # d1 := t_3
+	lw   $v0, -52($fp)
+	sw   $v0, -40($fp)
+   # param this
+   # param 3
+   # t_4 := call init<2>
+	addi $sp, $sp, -20
+	sw   $fp, 16($sp)
+	sw   $a3, 12($sp)
+	sw   $a2, 8($sp)
+	sw   $a1, 4($sp)
+	sw   $a0, 0($sp)
+	lw   $a0, 0($sp)
+	li   $a1, 3
+	move $fp, $sp
+	addi $sp, $sp, -60
+	jal  init
+	move $sp, $fp
+	lw   $fp, 16($sp)
+	lw   $a3, 12($sp)
+	lw   $a2, 8($sp)
+	lw   $a1, 4($sp)
+	lw   $a0, 0($sp)
+	addi $sp, $sp, 20
+	sw   $v0, -56($fp)
+   # d2 := t_4
+	lw   $v0, -56($fp)
+	sw   $v0, -44($fp)
+   # param this
+   # param d1
+   # t_5 := call печатать<2>
+	addi $sp, $sp, -20
+	sw   $fp, 16($sp)
+	sw   $a3, 12($sp)
+	sw   $a2, 8($sp)
+	sw   $a1, 4($sp)
+	sw   $a0, 0($sp)
+	lw   $a0, 0($sp)
+	lw   $a1, -40($fp)
+	move $fp, $sp
+	addi $sp, $sp, -56
+	jal  печатать
+	move $sp, $fp
+	lw   $fp, 16($sp)
+	lw   $a3, 12($sp)
+	lw   $a2, 8($sp)
+	lw   $a1, 4($sp)
+	lw   $a0, 0($sp)
+	addi $sp, $sp, 20
+	sw   $v0, -60($fp)
+   # param this
+   # param d2
+   # t_6 := call печатать<2>
+	addi $sp, $sp, -20
+	sw   $fp, 16($sp)
+	sw   $a3, 12($sp)
+	sw   $a2, 8($sp)
+	sw   $a1, 4($sp)
+	sw   $a0, 0($sp)
+	lw   $a0, 0($sp)
+	lw   $a1, -44($fp)
+	move $fp, $sp
+	addi $sp, $sp, -56
+	jal  печатать
+	move $sp, $fp
+	lw   $fp, 16($sp)
+	lw   $a3, 12($sp)
+	lw   $a2, 8($sp)
+	lw   $a1, 4($sp)
+	lw   $a0, 0($sp)
+	addi $sp, $sp, 20
+	sw   $v0, -64($fp)
+   # t_7 := t_5 + t_6
+	lw   $v0, -60($fp)
+	lw   $v1, -64($fp)
+	add  $v0, $v0, $v1
+	sw   $v0, -68($fp)
+   # param this
+   # param d1
+   # param d2
+   # t_8 := call плюс<3>
+	addi $sp, $sp, -20
+	sw   $fp, 16($sp)
+	sw   $a3, 12($sp)
+	sw   $a2, 8($sp)
+	sw   $a1, 4($sp)
+	sw   $a0, 0($sp)
+	lw   $a0, 0($sp)
+	lw   $a1, -40($fp)
+	lw   $a2, -44($fp)
+	move $fp, $sp
+	addi $sp, $sp, -60
+	jal  плюс
+	move $sp, $fp
+	lw   $fp, 16($sp)
+	lw   $a3, 12($sp)
+	lw   $a2, 8($sp)
+	lw   $a1, 4($sp)
+	lw   $a0, 0($sp)
+	addi $sp, $sp, 20
+	sw   $v0, -72($fp)
+   # param this
+   # param t_8
+   # t_9 := call печатать<2>
+	addi $sp, $sp, -20
+	sw   $fp, 16($sp)
+	sw   $a3, 12($sp)
+	sw   $a2, 8($sp)
+	sw   $a1, 4($sp)
+	sw   $a0, 0($sp)
+	lw   $a0, 0($sp)
+	lw   $a1, -72($fp)
+	move $fp, $sp
+	addi $sp, $sp, -56
+	jal  печатать
+	move $sp, $fp
+	lw   $fp, 16($sp)
+	lw   $a3, 12($sp)
+	lw   $a2, 8($sp)
+	lw   $a1, 4($sp)
+	lw   $a0, 0($sp)
+	addi $sp, $sp, 20
+	sw   $v0, -76($fp)
+   # t_10 := t_7 - t_9
+	lw   $v0, -68($fp)
+	lw   $v1, -76($fp)
+	sub  $v0, $v0, $v1
+	sw   $v0, -80($fp)
+   # return t_10
+	lw   $ra ,  -4($fp)
+	lw   $v0, -80($fp)
+	jr $ra
+   # init:
+init:
+	sw   $ra ,  -4($fp)
+   # t_11 := level < 1
+	move $v0, $a1
+	li   $v1, 1
+	slt  $v0, $v0, $v1
+	sw   $v0, -44($fp)
+   # iffalse t_11 goto L_0
+	lw   $v0, -44($fp)
+	beq $v0, $zero,L_0
+   # doll := НОЛЬ
+	lw   $v0, 0($a0)
+	sw   $v0, -40($fp)
+   # goto L_1
+	j L_1
+   # L_0:
+L_0:
+   # t_12 := new Матрёшка
+	addi $sp, $sp, -4
+	sw   $a0, 0($sp)
+	li $a0, 4
+	jal  _new_object
+	sw   $v0, -48($fp)
+	lw   $a0, 0($sp)
+	addi $sp, $sp, 4
+   # t_13 := level - 1
+	move $v0, $a1
+	li   $v1, 1
+	sub  $v0, $v0, $v1
+	sw   $v0, -52($fp)
+   # param this
+   # param t_13
+   # t_14 := call init<2>
+	addi $sp, $sp, -20
+	sw   $fp, 16($sp)
+	sw   $a3, 12($sp)
+	sw   $a2, 8($sp)
+	sw   $a1, 4($sp)
+	sw   $a0, 0($sp)
+	lw   $a0, 0($sp)
+	lw   $a1, -52($fp)
+	move $fp, $sp
+	addi $sp, $sp, -60
+	jal  init
+	move $sp, $fp
+	lw   $fp, 16($sp)
+	lw   $a3, 12($sp)
+	lw   $a2, 8($sp)
+	lw   $a1, 4($sp)
+	lw   $a0, 0($sp)
+	addi $sp, $sp, 20
+	sw   $v0, -56($fp)
+   # param t_12
+   # param t_14
+   # t_15 := call set<2>
+	addi $sp, $sp, -20
+	sw   $fp, 16($sp)
+	sw   $a3, 12($sp)
+	sw   $a2, 8($sp)
+	sw   $a1, 4($sp)
+	sw   $a0, 0($sp)
+	lw   $a0, -48($fp)
+	lw   $a1, -56($fp)
+	move $fp, $sp
+	addi $sp, $sp, -36
+	jal  set
+	move $sp, $fp
+	lw   $fp, 16($sp)
+	lw   $a3, 12($sp)
+	lw   $a2, 8($sp)
+	lw   $a1, 4($sp)
+	lw   $a0, 0($sp)
+	addi $sp, $sp, 20
+	sw   $v0, -60($fp)
+   # doll := t_15
+	lw   $v0, -60($fp)
+	sw   $v0, -40($fp)
+   # L_1:
+L_1:
+   # return doll
+	lw   $ra ,  -4($fp)
+	lw   $v0, -40($fp)
+	jr $ra
+   # плюс:
+плюс:
+	sw   $ra ,  -4($fp)
+   # param d1
+   # param НОЛЬ
+   # t_16 := call equals<2>
+	addi $sp, $sp, -20
+	sw   $fp, 16($sp)
+	sw   $a3, 12($sp)
+	sw   $a2, 8($sp)
+	sw   $a1, 4($sp)
+	sw   $a0, 0($sp)
+	lw   $a0, 4($sp)
+	lw   $a1, 0($sp)
+	lw   $a1, 0($a1)
+	move $fp, $sp
+	addi $sp, $sp, -36
+	jal  equals
+	move $sp, $fp
+	lw   $fp, 16($sp)
+	lw   $a3, 12($sp)
+	lw   $a2, 8($sp)
+	lw   $a1, 4($sp)
+	lw   $a0, 0($sp)
+	addi $sp, $sp, 20
+	sw   $v0, -44($fp)
+   # iffalse t_16 goto L_2
+	lw   $v0, -44($fp)
+	beq $v0, $zero,L_2
+   # doll := d2
+	move $v0, $a2
+	sw   $v0, -40($fp)
+   # goto L_3
+	j L_3
+   # L_2:
+L_2:
+   # param d1
+   # t_17 := call get<1>
+	addi $sp, $sp, -20
+	sw   $fp, 16($sp)
+	sw   $a3, 12($sp)
+	sw   $a2, 8($sp)
+	sw   $a1, 4($sp)
+	sw   $a0, 0($sp)
+	lw   $a0, 4($sp)
+	move $fp, $sp
+	addi $sp, $sp, -36
+	jal  get
+	move $sp, $fp
+	lw   $fp, 16($sp)
+	lw   $a3, 12($sp)
+	lw   $a2, 8($sp)
+	lw   $a1, 4($sp)
+	lw   $a0, 0($sp)
+	addi $sp, $sp, 20
+	sw   $v0, -48($fp)
+   # t_18 := new Матрёшка
+	addi $sp, $sp, -4
+	sw   $a0, 0($sp)
+	li $a0, 4
+	jal  _new_object
+	sw   $v0, -52($fp)
+	lw   $a0, 0($sp)
+	addi $sp, $sp, 4
+   # param t_18
+   # param d2
+   # t_19 := call set<2>
+	addi $sp, $sp, -20
+	sw   $fp, 16($sp)
+	sw   $a3, 12($sp)
+	sw   $a2, 8($sp)
+	sw   $a1, 4($sp)
+	sw   $a0, 0($sp)
+	lw   $a0, -52($fp)
+	lw   $a1, 8($sp)
+	move $fp, $sp
+	addi $sp, $sp, -36
+	jal  set
+	move $sp, $fp
+	lw   $fp, 16($sp)
+	lw   $a3, 12($sp)
+	lw   $a2, 8($sp)
+	lw   $a1, 4($sp)
+	lw   $a0, 0($sp)
+	addi $sp, $sp, 20
+	sw   $v0, -56($fp)
+   # param this
+   # param t_17
+   # param t_19
+   # t_20 := call плюс<3>
+	addi $sp, $sp, -20
+	sw   $fp, 16($sp)
+	sw   $a3, 12($sp)
+	sw   $a2, 8($sp)
+	sw   $a1, 4($sp)
+	sw   $a0, 0($sp)
+	lw   $a0, 0($sp)
+	lw   $a1, -48($fp)
+	lw   $a2, -56($fp)
+	move $fp, $sp
+	addi $sp, $sp, -60
+	jal  плюс
+	move $sp, $fp
+	lw   $fp, 16($sp)
+	lw   $a3, 12($sp)
+	lw   $a2, 8($sp)
+	lw   $a1, 4($sp)
+	lw   $a0, 0($sp)
+	addi $sp, $sp, 20
+	sw   $v0, -60($fp)
+   # doll := t_20
+	lw   $v0, -60($fp)
+	sw   $v0, -40($fp)
+   # L_3:
+L_3:
+   # return doll
+	lw   $ra ,  -4($fp)
+	lw   $v0, -40($fp)
+	jr $ra
+   # печатать:
+печатать:
+	sw   $ra ,  -4($fp)
+   # param doll
+   # param НОЛЬ
+   # t_21 := call equals<2>
+	addi $sp, $sp, -20
+	sw   $fp, 16($sp)
+	sw   $a3, 12($sp)
+	sw   $a2, 8($sp)
+	sw   $a1, 4($sp)
+	sw   $a0, 0($sp)
+	lw   $a0, 4($sp)
+	lw   $a1, 0($sp)
+	lw   $a1, 0($a1)
+	move $fp, $sp
+	addi $sp, $sp, -36
+	jal  equals
+	move $sp, $fp
+	lw   $fp, 16($sp)
+	lw   $a3, 12($sp)
+	lw   $a2, 8($sp)
+	lw   $a1, 4($sp)
+	lw   $a0, 0($sp)
+	addi $sp, $sp, 20
+	sw   $v0, -44($fp)
+   # iffalse t_21 goto L_4
+	lw   $v0, -44($fp)
+	beq $v0, $zero,L_4
+   # i := 0
+	li   $v0, 0
+	sw   $v0, -40($fp)
+   # goto L_5
+	j L_5
+   # L_4:
+L_4:
+   # param doll
+   # t_22 := call get<1>
+	addi $sp, $sp, -20
+	sw   $fp, 16($sp)
+	sw   $a3, 12($sp)
+	sw   $a2, 8($sp)
+	sw   $a1, 4($sp)
+	sw   $a0, 0($sp)
+	lw   $a0, 4($sp)
+	move $fp, $sp
+	addi $sp, $sp, -36
+	jal  get
+	move $sp, $fp
+	lw   $fp, 16($sp)
+	lw   $a3, 12($sp)
+	lw   $a2, 8($sp)
+	lw   $a1, 4($sp)
+	lw   $a0, 0($sp)
+	addi $sp, $sp, 20
+	sw   $v0, -48($fp)
+   # param this
+   # param t_22
+   # t_23 := call печатать<2>
+	addi $sp, $sp, -20
+	sw   $fp, 16($sp)
+	sw   $a3, 12($sp)
+	sw   $a2, 8($sp)
+	sw   $a1, 4($sp)
+	sw   $a0, 0($sp)
+	lw   $a0, 0($sp)
+	lw   $a1, -48($fp)
+	move $fp, $sp
+	addi $sp, $sp, -56
+	jal  печатать
+	move $sp, $fp
+	lw   $fp, 16($sp)
+	lw   $a3, 12($sp)
+	lw   $a2, 8($sp)
+	lw   $a1, 4($sp)
+	lw   $a0, 0($sp)
+	addi $sp, $sp, 20
+	sw   $v0, -52($fp)
+   # t_24 := 1 + t_23
+	li   $v0, 1
+	lw   $v1, -52($fp)
+	add  $v0, $v0, $v1
+	sw   $v0, -56($fp)
+   # i := t_24
+	lw   $v0, -56($fp)
+	sw   $v0, -40($fp)
+   # L_5:
+L_5:
+   # param i
+   # call _system_out_println<1>
+	addi $sp, $sp, -4
+	sw   $a0, 0($sp)
+	lw   $a0, -40($fp)
+	jal  _system_out_println
+	lw   $a0, 0($sp)
+	addi $sp, $sp, 4
+   # return i
+	lw   $ra ,  -4($fp)
+	lw   $v0, -40($fp)
+	jr $ra
+### RUNTIME MIPS ###
+equals:
+   # méthode Object.equals(Object)
+	seq $v0, $a0, $a1
+	jr   $ra
+_system_out_println:
+   # IN  $a0 = integer to print
+   # print integer
+	li   $v0,  1
+	syscall 
+   # print char newline
+	li   $a0, 10
+	li   $v0, 11
+	syscall
+   # end
+	jr   $ra
+_new_object:
+   # IN  $a0 = number of bytes
+   # OUT $v0 = allocated address
+   # malloc (sbrk)
+	li   $v0, 9
+	syscall
+   # initialize with zeros
+	move $t0, $a0
+	move $t1, $v0
+   # do until $t0=0
+_newobj_loop:
+	beq  $t0, $zero, _newobj_exit
+	sb   $zero, 0($t1)
+	addi $t1, $t1,  1 
+	addi $t0, $t0, -1 
+	j    _newobj_loop 
+_newobj_exit:
+   # done
+   # end
+	jr   $ra

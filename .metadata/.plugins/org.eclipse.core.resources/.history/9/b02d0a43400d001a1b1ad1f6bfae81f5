@@ -1,0 +1,14 @@
+
+public class Minus extends Expr {
+	private int value;
+	
+	public Minus(Expr e1, Expr e2) {
+		this.value = e1.eval() + e2.eval();
+	}
+	@Override
+	public int eval() {
+		// TODO Auto-generated method stub
+		return(this.value);
+	}
+	
+}

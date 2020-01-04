@@ -1,0 +1,8 @@
+
+public class Times {
+	public Entier(int value) {
+		this.value = value;
+	}
+
+	
+}
