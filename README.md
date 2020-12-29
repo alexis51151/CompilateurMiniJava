@@ -1,5 +1,5 @@
-# CompilateurMiniJava
-My own MiniJava compiler
+# My own MiniJava compiler
+
 
 C'est un compilateur d'un sous-langage de Java qu'on a nommé MiniJava pour apprendre à créer notre compilateur de A à Z.
 
